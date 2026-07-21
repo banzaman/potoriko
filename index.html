@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- ✏️ EDIT: Page title -->
+<title>Mark Rubanza — Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:           #ffffff;
+  --bg-alt:       #EEF3FF;
+  --text:         #000000;
+  --muted:        rgba(0,0,0,0.52);
+  --accent:       #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-wash:  #EEF3FF;
+  --border:       rgba(0,0,0,0.10);
+  --border-mid:   rgba(0,0,0,0.18);
+
+  --mono: 'Space Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --max:  1080px;
+
+  --ease: cubic-bezier(.22,.68,0,1.2);
+}
+
+[data-theme="dark"] {
+  --bg:           #000000;
+  --bg-alt:       #060E24;
+  --text:         #ffffff;
+  --muted:        rgba(255,255,255,0.50);
+  --accent:       #3B82F6;
+  --accent-hover: #2563EB;
+  --accent-wash:  rgba(59,130,246,0.12);
+  --border:       rgba(255,255,255,0.10);
+  --border-mid:   rgba(255,255,255,0.20);
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html   { scroll-behavior: smooth; }
+body   { font-family: var(--sans); background: var(--bg); color: var(--text);
+         line-height: 1.7; -webkit-font-smoothing: antialiased;
+         transition: background .25s, color .25s; }
+a      { color: inherit; }
+button { font-family: inherit; }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes blink    { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.fade-in.visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .fade-in.visible { transition: none; opacity: 1; transform: none; }
+  .cursor { animation: none !important; opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT HELPERS
+═══════════════════════════════════════ */
+.container { max-width: var(--max); margin: 0 auto; padding: 0 2rem; }
+section    { padding: 96px 0; }
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY HELPERS
+═══════════════════════════════════════ */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: .75rem;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 1.5px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: var(--mono);
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  margin-bottom: 3rem;
+}
+
+/* ═══════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════ */
+nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 200;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transition: background .25s, border-color .25s;
+}
+
+.nav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--accent);
+  letter-spacing: -.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: var(--accent-wash);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: background .25s, border-color .25s, color .25s;
+}
+.nav-logo:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 26px;
+  border: 1.5px solid var(--border-mid);
+  border-radius: 999px;
+  background: var(--bg);
+  cursor: pointer;
+  padding: 0;
+  transition: border-color .25s, background .25s;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* The sliding knob */
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform .3s var(--ease);
+}
+
+[data-theme="dark"] .theme-toggle::after {
+  transform: translateX(26px);
+}
+
+/* Sun icon (light mode shows sun) */
+.toggle-icons {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  pointer-events: none;
+}
+.toggle-icons svg {
+  width: 11px; height: 11px;
+  flex-shrink: 0;
+}
+.icon-sun  { color: var(--bg); }
+.icon-moon { color: var(--muted); }
+[data-theme="dark"] .icon-sun  { color: var(--muted); }
+[data-theme="dark"] .icon-moon { color: var(--bg); }
+
+.nav-cta {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.nav-cta:hover { background: var(--accent-hover); }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 2rem 80px;
+}
+.hero-inner { max-width: var(--max); margin: 0 auto; width: 100%; }
+.hero-content { max-width: 700px; }
+
+.hero-name {
+  font-family: var(--mono);
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -.04em;
+  margin-bottom: 1.25rem;
+}
+
+.hero-role {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+  min-height: 2em;
+  font-weight: 400;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px; height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+.hero-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.85;
+  max-width: 500px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 11px 22px;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+.btn-solid {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-solid:hover { background: var(--accent-hover); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border-mid);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.hero-scroll {
+  margin-top: 5rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-scroll-line { width: 36px; height: 1px; background: var(--border-mid); }
+
+/* ═══════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════ */
+.about { background: var(--bg-alt); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.about-bio p {
+  font-size: .975rem;
+  color: var(--muted);
+  line-height: 1.9;
+  margin-bottom: 1.1rem;
+}
+.about-bio p:last-child { margin-bottom: 0; }
+.about-bio strong      { color: var(--text); font-weight: 500; }
+.highlight-text {
+  color: var(--text) !important;
+  font-weight: 900;
+  display: inline;
+  padding: 0;
+  border-radius: 0;
+  white-space: normal;
+  background: transparent !important;
+}
+.stat {
+  padding: 1.5rem;
+  background: var(--bg);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 140px;
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 0;
+}
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl  { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; }
+/* ═══════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════ */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--border-mid);
+}
+
+.project-card {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  transition: background .2s;
+  position: relative;
+}
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+.project-card:hover { background: var(--accent-wash); }
+.project-card:hover::after { opacity: 1; }
+
+.project-icon {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: .75rem;
+}
+.project-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 3px;
+}
+
+.project-title {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: .5rem;
+  letter-spacing: -.01em;
+}
+
+.project-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.75;
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.project-links { display: flex; gap: 14px; }
+.project-link  {
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color .15s;
+  color: var(--text);
+}
+.project-link.primary { color: var(--accent); }
+.project-link:hover   { color: var(--accent); }
+.project-link svg     { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════
+   SKILLS
+═══════════════════════════════════════ */
+.skills { background: var(--bg-alt); }
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2.5rem;
+}
+
+.skill-group-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--border-mid);
+}
+
+.skill-list { list-style: none; }
+.skill-list li {
+  font-size: 14px;
+  color: var(--text);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.skill-list li::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.skill-list li:last-child { border-bottom: none; }
+
+/* ═══════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════ */
+.contact-wrap { max-width: 560px; }
+
+.contact-intro {
+  font-size: .975rem;
+  color: var(--muted);
+  line-height: 1.85;
+  margin-bottom: 2.5rem;
+}
+
+.contact-list { list-style: none; display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border-mid); }
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.social-btn {
+  flex: 1 1 160px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--accent-wash);
+  transition: transform .2s, background .2s, border-color .2s, color .2s;
+}
+.social-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: rgba(37,99,235,0.08);
+}
+.social-btn.email {
+  background: var(--accent);
+  color: #fff;
+}
+.social-btn.github {
+  border-color: var(--border-mid);
+}
+.social-btn.linkedin {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: background .15s;
+}
+.contact-item:hover { background: var(--accent-wash); }
+.contact-item:hover .contact-arrow { color: var(--accent); }
+
+.contact-icon {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.contact-icon svg { width: 17px; height: 17px; }
+
+.contact-lbl  { font-size: 11px; color: var(--muted); margin-bottom: 1px; }
+.contact-val  { font-size: 14px; font-weight: 500; }
+.contact-arrow {
+  margin-left: auto;
+  font-size: 18px;
+  color: var(--border-mid);
+  transition: color .15s;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+}
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-copy, .footer-top {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer-top:hover { color: var(--accent); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 740px) {
+  .nav-links { display: none; }
+  section    { padding: 72px 0; }
+  .hero      { padding: 90px 1.25rem 64px; }
+  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .container  { padding: 0 1.25rem; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     NAVBAR
+══════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <!-- ✏️ EDIT: your initials/slug -->
+    <a href="#" class="nav-logo">M</a>
+
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <!-- Dark / Light toggle -->
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
+        <span class="toggle-icons">
+          <!-- Sun -->
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <!-- Moon -->
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </span>
+      </button>
+      <a href="#contact" class="nav-cta">Hire me</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════
+     HERO
+══════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="eyebrow">Available for work</div>
+      <!-- ✏️ EDIT: your name -->
+      <h1 class="hero-name">Mark Rubanza.</h1>
+      <p class="hero-role">
+        <span id="roleText"></span><span class="cursor"></span>
+      </p>
+      <!-- ✏️ EDIT: your one-liner -->
+      <p class="hero-desc">
+        I build fast, accessible web apps with clean code and careful design.
+        Currently looking for a frontend or full-stack role where I can ship products people love.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-solid">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+          View my work
+        </a>
+        <!-- ✏️ EDIT: link to your CV -->
+        <a href="#" class="btn btn-outline">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
+          Download CV
+        </a>
+      </div>
+      <div class="hero-scroll">
+        <span class="hero-scroll-line"></span>
+        Scroll to explore
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     ABOUT
+══════════════════════════════════ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="eyebrow">About</div>
+    <h2 class="section-title">I turn ideas into<br>shipped products.</h2>
+    <div class="about-grid fade-in">
+      <div class="about-bio">
+        <!-- ✏️ EDIT: your bio -->
+        <p>I'm a developer with a focus on <strong>React, TypeScript, and Node.js</strong>. I love turning ideas into polished apps that feel fast, approachable, and dependable.</p>
+        <p>My journey started by solving real problems for people and teams, which taught me that every feature should add value and every interaction should feel effortless. That experience helps me keep the user first and build products that people actually enjoy using.</p>
+        <p>Outside of code, I enjoy <span class="highlight-text">watching movies, playing football, and running</span>. Based in <span class="highlight-text">Kampala, Uganda</span>, I bring that same attention to detail to every project I ship.</p>
+      </div>
+      <!-- ✏️ EDIT: your numbers -->
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-num">3<em>+</em></div>
+          <div class="stat-lbl">Years of experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">12<em>+</em></div>
+          <div class="stat-lbl">Projects shipped</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">8<em>+</em></div>
+          <div class="stat-lbl">Stack tools</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num"><em>∞</em></div>
+          <div class="stat-lbl">Cups of coffee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     PROJECTS
+══════════════════════════════════ -->
+<section id="projects">
+  <div class="container">
+    <div class="eyebrow">Projects</div>
+    <h2 class="section-title">Things I've built.</h2>
+    <div class="projects-grid">
+
+      <!-- ✏️ PROJECT 1 -->
+      <div class="project-card fade-in">
+        <span class="project-icon">💼</span>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+          <span class="project-tag">TypeScript</span>
+          <span class="project-tag">REST API</span>
+        </div>
+        <div class="project-title">Project Name One</div>
+        <p class="project-desc">A short description of what this project does and the problem it solves. Keep it to 2–3 sentences focused on impact.</p>
+        <div class="project-links">
+          <a href="#" class="project-link primary" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Live demo
+          </a>
+          <a href="#" class="project-link" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- ✏️ PROJECT 2 -->
+      <div class="project-card fade-in">
+        <span class="project-icon">🛠️</span>
+        <div class="project-tags">
+          <span class="project-tag">Next.js</span>
+          <span class="project-tag">Node.js</span>
+          <span class="project-tag">PostgreSQL</span>
+        </div>
+        <div class="project-title">Project Name Two</div>
+        <p class="project-desc">A short description of what this project does and the problem it solves. Keep it to 2–3 sentences focused on impact.</p>
+        <div class="project-links">
+          <a href="#" class="project-link primary" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Live demo
+          </a>
+          <a href="#" class="project-link" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- ✏️ PROJECT 3 -->
+      <div class="project-card fade-in">
+        <span class="project-icon">🚀</span>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+          <span class="project-tag">Tailwind</span>
+          <span class="project-tag">Firebase</span>
+        </div>
+        <div class="project-title">Project Name Three</div>
+        <p class="project-desc">A short description of what this project does and the problem it solves. Keep it to 2–3 sentences focused on impact.</p>
+        <div class="project-links">
+          <a href="#" class="project-link primary" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Live demo
+          </a>
+          <a href="#" class="project-link" target="_blank" rel="noopener">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     SKILLS
+══════════════════════════════════ -->
+<section class="skills" id="skills">
+  <div class="container">
+    <div class="eyebrow">Skills</div>
+    <h2 class="section-title">What I work with.</h2>
+    <!-- ✏️ EDIT: your actual skills -->
+    <div class="skills-grid fade-in">
+      <div>
+        <div class="skill-group-title">Frontend</div>
+        <ul class="skill-list">
+          <li>React</li>
+          <li>TypeScript</li>
+          <li>Next.js</li>
+          <li>Tailwind CSS</li>
+          <li>HTML / CSS</li>
+        </ul>
+      </div>
+      <div>
+        <div class="skill-group-title">Backend</div>
+        <ul class="skill-list">
+          <li>Node.js</li>
+          <li>Express</li>
+          <li>REST APIs</li>
+          <li>PostgreSQL</li>
+          <li>MongoDB</li>
+        </ul>
+      </div>
+      <div>
+        <div class="skill-group-title">Tools & DevOps</div>
+        <ul class="skill-list">
+          <li>Git &amp; GitHub</li>
+          <li>Vercel</li>
+          <li>Docker</li>
+          <li>Linux</li>
+          <li>Figma</li>
+        </ul>
+      </div>
+      <div>
+        <div class="skill-group-title">Currently learning</div>
+        <ul class="skill-list">
+          <li>Testing (Vitest)</li>
+          <li>tRPC</li>
+          <li>Redis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     CONTACT
+══════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="eyebrow">Contact</div>
+    <h2 class="section-title">Let's work together.</h2>
+    <div class="contact-wrap fade-in">
+      <p class="contact-intro">
+        I'm currently open to full-time roles and select freelance projects.
+        If you're hiring or have something interesting in mind, I'd love to hear from you.
+      </p>
+      <ul class="contact-list">
+        <!-- ✏️ EDIT: your real links -->
+        <li>
+          <a href="mailto:markrubanza10@gmail.com" class="contact-item">
+            <span class="contact-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <div>
+              <div class="contact-lbl">Email</div>
+              <div class="contact-val">markrubanza10@gmail.com</div>
+            </div>
+            <span class="contact-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/banzaman" class="contact-item" target="_blank" rel="noopener">
+            <span class="contact-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            </span>
+            <div>
+              <div class="contact-lbl">GitHub</div>
+              <div class="contact-val">github.com/banzaman</div>
+            </div>
+            <span class="contact-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/mark-rubanza-anderson/" class="contact-item" target="_blank" rel="noopener">
+            <span class="contact-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </span>
+            <div>
+              <div class="contact-lbl">LinkedIn</div>
+              <div class="contact-val">linkedin.com/in/mark-rubanza-anderson</div>
+            </div>
+            <span class="contact-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+      <div class="social-links">
+        <a href="mailto:markrubanza10@gmail.com" class="social-btn email">Email Mark</a>
+        <a href="https://github.com/banzaman" class="social-btn github" target="_blank" rel="noopener">GitHub Profile</a>
+        <a href="https://www.linkedin.com/in/mark-rubanza-anderson/" class="social-btn linkedin" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     FOOTER
+══════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <!-- ✏️ EDIT: your name -->
+    <span class="footer-copy">© 2026 Mark Rubanza. Built with HTML, CSS &amp; JS.</span>
+    <a href="#" class="footer-top">Back to top ↑</a>
+  </div>
+</footer>
+
+
+<script>
+// ─────────────────────────────────────
+// DARK MODE
+// ─────────────────────────────────────
+const html     = document.documentElement;
+const themeBtn = document.getElementById('themeBtn');
+const STORAGE  = 'portfolio-theme';
+
+// Load saved preference, or system preference
+const saved  = localStorage.getItem(STORAGE);
+const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+html.setAttribute('data-theme', saved || system);
+
+themeBtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem(STORAGE, next);
+});
+
+// ─────────────────────────────────────
+// TYPING ANIMATION
+// ─────────────────────────────────────
+// ✏️ EDIT: your own roles
+const ROLES = [
+  'Frontend Developer',
+  'React Engineer',
+  'Full-Stack Developer',
+  'TypeScript Enthusiast',
+];
+
+const roleEl = document.getElementById('roleText');
+let rIdx = 0, cIdx = 0, deleting = false;
+
+function typeRole() {
+  const word = ROLES[rIdx];
+  if (!deleting) {
+    cIdx++;
+    roleEl.textContent = word.slice(0, cIdx);
+    if (cIdx === word.length) {
+      deleting = true;
+      return setTimeout(typeRole, 1800);
+    }
+  } else {
+    cIdx--;
+    roleEl.textContent = word.slice(0, cIdx);
+    if (cIdx === 0) {
+      deleting = false;
+      rIdx = (rIdx + 1) % ROLES.length;
+    }
+  }
+  setTimeout(typeRole, deleting ? 42 : 78);
+}
+typeRole();
+
+// ─────────────────────────────────────
+// SCROLL FADE-INS
+// ─────────────────────────────────────
+const observer = new IntersectionObserver(
+  (entries) => entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  }),
+  { threshold: 0.1 }
+);
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
